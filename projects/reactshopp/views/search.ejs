@@ -1,4 +1,46 @@
+
 <link rel="stylesheet" href="/index.css">
 
-<div id="userbar"></div>
-The search page
+<div id="page-wrapper">
+<div id="userbar">
+    <a href="/home"><h2 id="badge">The Shop</h2></a>
+</div>
+    <div id="ui">
+        <form action="/filter" id="filter">
+            <div class="filter-section" id="filter-head">PRICE</div>
+            <div id="order-wrap" class="ui-wrap">
+                <label>Price: Low To High<input type="radio" name="order" value="L2H"></label>
+                <label>Price: High To Low<input type="radio" name="order" value="H2L"></label>
+            </div>
+            <div class="filter-section" id="filter-category">CATEGORY</div>
+            <div id="radio-wrap" class="ui-wrap">
+            <label>Sofas<input type="radio" id="sofa-filter" name="category" value="SOFA"></label>
+            <label>Tables<input type="radio" id="table-filter" name="category" value="TABL"></label>
+            <label>Sets<input type="radio" id="set-filter" name="category" value="DUBL">
+            <label>Other<input type="radio" id="other-filter" name="category" value="OTHR"></label>
+            </div>
+            <div class="filter-section" id="filter-sale">ON SALE</div>
+            <div id="sale-wrap" class="ui-wrap">
+                <label>On Sale<input type="checkbox" name="onsale" value="true"></label>
+            </div>
+            <button id="submit-filter" type="submit">
+                FILTER
+            </button>
+        </form>
+    </div>
+<div id="inventory">
+<% for (let i = 0 ; i < locals.data.length ; i++) { %>
+    <a href="/addCart/<%= locals.data[i].id %>"><div class="item-wrap">
+    <span><h2 class="<%= locals.data[i].party %> item"> <%= locals.data[i].name %> </h2>
+        <span id="cost-wrap">
+            <% if (!locals.data[i].saleprice) { %>
+            <p class="product-cost"> <%= locals.data[i].cost %></p> 
+            <% } %>
+            <% if (locals.data[i].saleprice) { %>
+            <p class="product-cost" id="sale-on"> <%= locals.data[i].cost %> </p> 
+            <p class="sale-cost"><span id="onsale">ON SALE</span> <%= locals.data[i].saleprice %></p> <% } %> </span></span>
+                <img class="product-image" src="<%= locals.data[i].image %>" height="220px" width="250px">
+    </div></a>
+<% } %>
+</div>
+</div>

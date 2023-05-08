@@ -66,11 +66,20 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-
+#badge {
+  margin-left: 35px;
+}
 
 /* Searchbar */
-
-
+#page-wrapper {
+  position: absolute;
+  min-height: 99vh;
+  max-height: 99vh;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+}
 #userbar {
   position: fixed;
   top: 0;
@@ -82,4 +91,110 @@ button:focus-visible {
   z-index: 10;
   border-bottom: 3px solid navy;
 /*  box-shadow: 0px 0px 20px 5px #8ebfff; */
+}
+#inventory {
+  top: 120px;
+  position: absolute;
+  height: 75%;
+  right: 0;
+  width: 90%;
+  max-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: none;
+  overflow-y: auto;
+}
+.item-wrap {
+  position: relative;
+  height: 300px; 
+  width: 400px;
+  border-bottom: 1px solid grey;
+  border-left: 1px solid grey;
+  border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  margin: 15px;
+  box-sizing: border-box;
+}
+.item-wrap:hover {
+  animation: boxfade 500ms forwards;
+  cursor: pointer;
+}
+.product-image {
+  margin: 15px;
+}
+label {
+  font-weight: bold;
+  display: block;
+}
+#onsale {
+  font-weight: bold;
+  color: red;
+}
+#sale-on {
+  text-decoration: line-through;
+  color: grey;
+  opacity: 0.5;
+}
+#radio-wrap {
+  width: 100px;
+}
+#ui {
+  position: absolute;
+  left: 0;
+  height: 100%; 
+  background-color: lightgrey;
+  border-right: 3px solid navy;
+  width: 12%;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+#submit-filter {
+  background-color: navy;
+  color: white;
+  position: absolute;
+  right: 0;
+  width: 100%;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+#filter {
+  position: absolute;
+  top: 90px;
+}
+.filter-section {
+  height: 50px;
+  background-color: rgba(42, 42, 42, 0.25);
+  color: white;
+  position: relative;
+  left: -10%;
+  width: 150%;
+  padding-left: 25px;
+}
+.ui-wrap {
+  padding-top: 15px;
+  padding-bottom: 50px;
+}
+a:link {
+  color: black;
+}
+a:visited {
+  color: black;
+}
+
+@keyframes boxfade {
+  from {
+    border: none;
+  }
+  to {
+    border: none;
+    box-shadow: 0px 0px 20px 5px lightblue;
+  }
 }
