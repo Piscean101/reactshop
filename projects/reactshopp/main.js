@@ -20,7 +20,7 @@ app.use(session({
     rolling: true,
     cookie: {
         secure: false,
-        maxAge: 1800000,
+        maxAge: 900000,
         minAge: 300000
     }
 }));
