@@ -9,26 +9,28 @@
   </head>
   <body id="register-body">
     <div id="userbar">
-      <a href="/">Browse</a>
+      <span id="badge-wrap" title="Browse"><a href="/search"><h2 class="badge">TheShop<img id="right-arrow" src="/assets/rightarrow.svg" height="20px" width="25px"></h2></a></span>
     </div>
     <form action="/register" method="POST">
     <fieldset id="register-field">
       <legend>
         Register
       </legend>
-      <label for="r-username">Username<input type="text" maxlength="20" name="username"></label>
-      <label for="r-password">Password<input type="password" maxlength="20" name="password"></label>
-      <label for="nickname">Nickname<input type="text" maxlength="10" name="nickname"></label>
+      <label for="r-username">Username<input type="text" maxlength="20" name="username" required></label>
+      <label for="r-password">Password<input type="password" maxlength="20" name="password" required></label>
+      <label for="nickname">Nickname<input type="text" maxlength="10" name="nickname" required></label>
+      <label for="email" id="email-label">Email<input type="email" name="email" maxlength="100"></label>
       <input type="submit" value="Register">
     </fieldset>
     </form>
-    <form action="/login" method="POST">
+    <form action="/login/password" method="POST">
     <fieldset id="login-field">
       <legend>
         Login
       </legend>
       <label for="l-username">Username<input type="text" maxlength="20" name="username"></label>
       <label for="l-password">Password<input type="password" maxlength="20" name="password"></label>
+      <p id="login-error">Username/Password combination invalid</p>
       <input type="submit" value="Login">
     </fieldset>
     </form>

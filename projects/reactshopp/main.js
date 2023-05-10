@@ -1,4 +1,5 @@
 const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const cookie = require('cookie-parser');
 const express = require('express');
 const session = require('express-session');
@@ -23,6 +24,8 @@ app.use(session({
         minAge: 300000
     }
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 const mysql = require('mysql');
 const db = mysql.createConnection({
     host: 'localhost',
@@ -38,35 +41,29 @@ db.connect((err) => {
         console.log(err)
     }
 });
-app.get('/', (req, res) => {
+app.get('/search', (req, res) => {
     db.query(`SELECT * FROM inventory ORDER BY 3`, (err, data) => {
         for (let i = 0 ; i < data.length ; i ++) {
             if (data[i].onsale) {
                 data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
             }
         }
+        if (req.isAuthenticated()) {
+
         res.render('search' , {
-            data: data
-        })
+            data: data , welcome: `Welcome back, ${req.user.nickname}`
+        })  } else {
+            res.render('search', {
+                data: data
+            })
+        }
     })
 })
 app.get('/addCart/:id', (req, res) => {
     res.redirect('/');
 })
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile('index.html', { root: __dirname })
-})
-app.post('/register', (req, res, next) => {
-    db.query(`SELECT * FROM customers WHERE username = '${req.body.username}'`, (err, data) => {
-        if (data.length == 1) {
-            console.log('username taken')
-            res.redirect('/home');
-        } else {
-            db.query(`INSERT INTO customers (username, password, nickname) VALUES ('${req.body.username}', '${req.body.password}',' ${req.body.nickname}')`)
-            console.log('register success')
-            res.redirect('/home')
-        }
-    })
 })
 
 // onsale = integer
@@ -228,9 +225,70 @@ app.get('/filter', (req, res) => {
 })
 
 
+/* REGISTRATION LOGIN CONFIG */
 
+app.post('/register', (req, res, next) => {
+    db.query(`SELECT * FROM customers WHERE username = '${req.body.username}'`, (err, data) => {
+        if (data.length == 1) {
+            console.log('username taken')
+            res.redirect('/home');
+        } else {
+            db.query(`INSERT INTO customers (username, password, nickname) VALUES ('${req.body.username}', '${req.body.password}',' ${req.body.nickname}')`)
+            console.log('register success')
+            res.redirect('/home')
+        }
+    })
+});
 
+app.post('/login/password', (req, res, next) => {
+    db.query(`SELECT * FROM customers WHERE username = '${req.body.username}' AND password = '${req.body.password}'`, (err, data) => {
+        if (data.length > 0) {
+            console.log(data)
+            next();
+        } else {
+            console.log('not found')
+            res.redirect('/');
+        }
+    })
+});
+app.post('/login/password', (req, res, next) => {
+    initialize(
+        passport,
+        req.body.username,
+        req.body.password
+    )
+    next();
+});
+app.post('/login/password', passport.authenticate('local', {
+    successRedirect: '/search',
+    failureRedirect: '/'
+}));
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    req.logOut(() => {
+        console.log('Logged Out')
+    });
+    res.redirect('/');
+})
 
+function initialize (passport, username, password) {
+    const authenticate = async (username, password, done) => {
+        let search = `SELECT * FROM customers WHERE username = '${username}' AND password = '${password}'`;
+        db.query(search, (err, data) => {
+            if (data.length === 1) {
+                const user = data[0];
+                return done (null, user)
+            }
+            else {
+                return done(null, false);
+            }
+        })
+    }
+    passport.use(new LocalStrategy(authenticate));
+    
+    passport.serializeUser( function(user, done) { return done(null, user)});
+    passport.deserializeUser( function(user, done) { return done(null, user)});
+}
 
 
 

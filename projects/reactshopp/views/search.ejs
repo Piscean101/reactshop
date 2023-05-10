@@ -3,7 +3,17 @@
 
 <div id="page-wrapper">
 <div id="userbar">
-    <a href="/home"><h2 id="badge">The Shop</h2></a>
+    <a href="/"><h2 class="badge">The Shop</h2></a>
+        <% if (locals.welcome) { %> <p id="welcome"> <%= locals.welcome %>
+            <a title="Order History"><img src="/assets/folder-open-outline.svg" height="20px" width="30px">
+            <a href="/logout" title="Log Out">
+                <img src="/assets/close-outline.svg" height="20px" width="30px"></a></p>
+        <% } %>
+    <form id="login-inventory" action="/login/password" method="POST">
+            <input id="username" class="user" name="username" type="text" placeholder="username">
+            <input id="password" class="user" name="password" type="text" placeholder="password">
+            <input id="submit-login-inventory" type="submit" value="Log In">
+    </form>
 </div>
     <div id="ui">
         <form action="/filter" id="filter">
