@@ -5,14 +5,33 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/index.css">
-    <title>Reactshopp</title>
+    <title>The Shop</title>
   </head>
-  <body>
-    <div id="userbar"></div>
-    <div id="root">
-      <h5 id="inventory">
-        </h5>
+  <body id="register-body">
+    <div id="userbar">
+      <a href="/">Browse</a>
     </div>
+    <form action="/register" method="POST">
+    <fieldset id="register-field">
+      <legend>
+        Register
+      </legend>
+      <label for="r-username">Username<input type="text" maxlength="20" name="username"></label>
+      <label for="r-password">Password<input type="password" maxlength="20" name="password"></label>
+      <label for="nickname">Nickname<input type="text" maxlength="10" name="nickname"></label>
+      <input type="submit" value="Register">
+    </fieldset>
+    </form>
+    <form action="/login" method="POST">
+    <fieldset id="login-field">
+      <legend>
+        Login
+      </legend>
+      <label for="l-username">Username<input type="text" maxlength="20" name="username"></label>
+      <label for="l-password">Password<input type="password" maxlength="20" name="password"></label>
+      <input type="submit" value="Login">
+    </fieldset>
+    </form>
   </body>
 </html>
  

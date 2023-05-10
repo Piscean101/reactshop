@@ -70,6 +70,17 @@ button:focus-visible {
   margin-left: 35px;
 }
 
+/* Register Login Page */
+
+#register-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+form {
+  margin: 10%;
+}
+
 /* Searchbar */
 #page-wrapper {
   position: absolute;

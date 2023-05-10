@@ -56,6 +56,18 @@ app.get('/addCart/:id', (req, res) => {
 app.get('/home', (req, res) => {
     res.sendFile('index.html', { root: __dirname })
 })
+app.post('/register', (req, res, next) => {
+    db.query(`SELECT * FROM customers WHERE username = '${req.body.username}'`, (err, data) => {
+        if (data.length == 1) {
+            console.log('username taken')
+            res.redirect('/home');
+        } else {
+            db.query(`INSERT INTO customers (username, password, nickname) VALUES ('${req.body.username}', '${req.body.password}',' ${req.body.nickname}')`)
+            console.log('register success')
+            res.redirect('/home')
+        }
+    })
+})
 
 // onsale = integer
 // order = 'L2H' or 'H2L'
@@ -145,7 +157,7 @@ app.get('/filter', (req, res) => {
       // N.SALE ORDER CAT ->
       else if (!req.query.onsale && req.query.order && req.query.category) {
         if (req.query.order == 'L2H') {
-        db.query(`SELECT * FROM inventory WHERE onsale IS NULL AND party = '${req.query.category}' ORDER BY 4`, (err, data) => {
+        db.query(`SELECT * FROM inventory WHERE party = '${req.query.category}' ORDER BY 4`, (err, data) => {
             for (let i = 0 ; i < data.length ; i ++) {
                 if (data[i].onsale) {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
@@ -156,7 +168,7 @@ app.get('/filter', (req, res) => {
             })
         })
     } else {
-        db.query(`SELECT * FROM inventory WHERE onsale IS NULL AND party = '${req.query.category}' ORDER BY 4 DESC`, (err, data) => {
+        db.query(`SELECT * FROM inventory WHERE party = '${req.query.category}' ORDER BY 4 DESC`, (err, data) => {
             for (let i = 0 ; i < data.length ; i ++) {
                 if (data[i].onsale) {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
