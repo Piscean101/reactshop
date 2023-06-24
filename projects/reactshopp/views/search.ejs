@@ -3,17 +3,26 @@
 
 <div id="page-wrapper">
 <div id="userbar">
-    <a href="/"><h2 class="badge">Home</h2></a>
-        <% if (locals.welcome) { %> <p id="welcome"> <%= locals.welcome %>
-            <a title="Order History"><img src="/assets/folder-open-outline.svg" height="20px" width="30px">
-            <a href="/logout" title="Log Out">
-                <img src="/assets/close-outline.svg" height="20px" width="30px"></a></p>
+    <a href="/"><h2 class="badge">TheShop</h2></a>
+    
+        <% if (locals.welcome) { %> <div id="user-ui"><p id="welcome"> <%= locals.welcome %></p>
+            <a href="/logout" id="logout" title="Log Out">
+                <img src="/assets/close-outline.svg" height="20px" width="30px"></a>
+<form id="OH" method="POST" name="orderHist" action="/profile/OH/:<%= locals.user.username %>">
+<button type="submit" id="OH-submit"><img src="/assets/folder-open-outline.svg" height="20px" width="30px" title="Order History"></button>
+</form>
+<form id="CO" method="POST" name="checkout" action="/profile/CO/:<%= locals.user.username %>">
+    <button type="submit" id="CO-submit"><img src="/assets/bag-handle-outline.svg" height="20px" width="30px" title="Checkout"></button>
+</form>
+
+    </div>
         <% } %>
-    <form id="login-inventory" action="/login/password" method="POST">
+        <% if (!locals.welcome) { %> <form id="login-inventory" action="/login/password" method="POST">
             <input id="username" class="user" name="username" type="text" placeholder="username">
             <input id="password" class="user" name="password" type="text" placeholder="password">
             <input id="submit-login-inventory" type="submit" value="Log In">
     </form>
+    <% } %>
 </div>
     <div id="ui">
         <form action="/filter" id="filter">
@@ -41,14 +50,17 @@
 <div id="inventory">
 <% for (let i = 0 ; i < locals.data.length ; i++) { %>
     <a href="/addCart/<%= locals.data[i].id %>"><div class="item-wrap">
-    <span><h2 class="<%= locals.data[i].party %> item"> <%= locals.data[i].name %> </h2>
+        <h2 class="<%= locals.data[i].party %> item"> <%= locals.data[i].name %> </h2>
+    <span>
         <span id="cost-wrap">
             <% if (!locals.data[i].saleprice) { %>
-            <p class="product-cost"> <%= locals.data[i].cost %></p> 
+            <p class="product-cost"> $<%= locals.data[i].cost %>CAD</p> 
             <% } %>
             <% if (locals.data[i].saleprice) { %>
+            <div id="show-sale"><h3><%= locals.data[i].onsale %>% OFF</h3></div>
             <p class="product-cost" id="sale-on"> <%= locals.data[i].cost %> </p> 
-            <p class="sale-cost"><span id="onsale">ON SALE</span> <%= locals.data[i].saleprice %></p> <% } %> </span></span>
+            <p class="sale-cost"><span id="onsale">ON SALE</span> $<%= locals.data[i].saleprice %>CAD</p> <% } %> </span></span>
+
                 <img class="product-image" src="<%= locals.data[i].image %>" height="220px" width="250px">
     </div></a>
 <% } %>

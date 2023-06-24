@@ -12,6 +12,7 @@ app.listen(PORT, () => {
 });
 app.use(cookie());
 app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({ 
     secret: "bbw",
@@ -41,6 +42,11 @@ db.connect((err) => {
         console.log(err)
     }
 });
+/*app.get('/search', (req, res) => {
+    if (!req.isAuthenticated()) {
+         res.redirect('/');
+    }
+});*/
 app.get('/search', (req, res) => {
     db.query(`SELECT * FROM inventory ORDER BY 3`, (err, data) => {
         for (let i = 0 ; i < data.length ; i ++) {
@@ -51,7 +57,7 @@ app.get('/search', (req, res) => {
         if (req.isAuthenticated()) {
 
         res.render('search' , {
-            data: data , welcome: `Welcome back, ${req.user.nickname}`
+            data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
         })  } else {
             res.render('search', {
                 data: data
@@ -60,15 +66,24 @@ app.get('/search', (req, res) => {
     })
 })
 app.get('/addCart/:id', (req, res) => {
-    res.redirect('/');
-})
+    res.redirect('/search');
+});
 app.get('/', (req, res) => {
-    res.sendFile('index.html', { root: __dirname })
+    res.sendFile('index.html', { root: __dirname });
+});
+app.post('/profile', (req, res) => {
+    console.log(req);
+});
+app.post('/profile/OH/:username', (req, res) => {
+    res.send(req.params.username);
+});
+app.post('/profile/CO/:username', (req, res) => {
+    res.send(req.params.username);
 })
-
+// THE FILTER ALGORITHM 
 // onsale = integer
-// order = 'L2H' or 'H2L'
-// category = 'string'
+// order = 'L2H' or 'H2L' meaning Lowest to Highest and Highest to Lowest
+// category = 'string' 
 app.get('/filter', (req, res) => {
     if (req.query.onsale && !req.query.order && !req.query.category) {
         db.query(`SELECT * FROM inventory WHERE onsale IS NOT NULL`, (err, data) => {
