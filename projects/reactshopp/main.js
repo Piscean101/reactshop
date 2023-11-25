@@ -64,21 +64,34 @@ app.get('/search', (req, res) => {
             })
         }
     })
-})
+});
 app.get('/addCart/:id', (req, res) => {
-    res.redirect('/search');
+    db.query(`SELECT * FROM inventory WHERE id = ${req.params.id}`, (err, data) => {
+        // res.render('search')
+        if (req.isAuthenticated()){
+        db.query(`INSERT INTO cart (item_name, price, user_id, username) VALUES 
+                    ('${data[0].name}', ${data[0].cost}, ${req.user.id}, '${req.user.nickname}')`, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    })}
+        res.redirect('/search')
+    })
 });
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: __dirname });
 });
-app.post('/profile', (req, res) => {
-    console.log(req);
-});
 app.post('/profile/OH/:username', (req, res) => {
-    res.send(req.params.username);
+    res.render('orderhistory');
 });
 app.post('/profile/CO/:username', (req, res) => {
-    res.send(req.params.username);
+    if(req.isAuthenticated()){
+    db.query(`SELECT * FROM cart WHERE user_id = ${req.user.id}`, (err, data) => {
+        console.log(data);
+        res.render('checkout', {
+            data: data
+        });
+    })}
 })
 // THE FILTER ALGORITHM 
 // onsale = integer
@@ -86,29 +99,41 @@ app.post('/profile/CO/:username', (req, res) => {
 // category = 'string' 
 app.get('/filter', (req, res) => {
     if (req.query.onsale && !req.query.order && !req.query.category) {
-        db.query(`SELECT * FROM inventory WHERE onsale IS NOT NULL`, (err, data) => {
+        db.query(`SELECT * FROM inventory WHERE onsale IS NOT NULL ORDER BY 3`, (err, data) => {
             for (let i = 0 ; i < data.length ; i ++) {
                 if (data[i].onsale) {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     }
     // <- SALE N.ORDER N.CAT
     // SALE N.ORDER CAT ->
     else if (req.query.onsale && !req.query.order && req.query.category) {
-        db.query(`SELECT * FROM inventory WHERE onsale IS NOT NULL AND party = '${req.query.category}'`, (err, data) => {
+        db.query(`SELECT * FROM inventory WHERE onsale IS NOT NULL AND party = '${req.query.category}' ORDER BY 3`, (err, data) => {
             for (let i = 0 ; i < data.length ; i ++) {
                 if (data[i].onsale) {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     } 
     // <- SALE N.ORDER CAT
@@ -121,9 +146,15 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     } else {
         db.query(`SELECT * FROM inventory WHERE onsale IS NOT NULL ORDER BY 4 DESC`, (err, data) => {
@@ -132,9 +163,15 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     }
     }
@@ -148,9 +185,15 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     } else {
         db.query(`SELECT * FROM inventory WHERE onsale IS NOT NULL AND party = '${req.query.category}' ORDER BY 4 DESC`, (err, data) => {
@@ -159,9 +202,15 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     }
     } 
@@ -175,9 +224,15 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     } else {
         db.query(`SELECT * FROM inventory WHERE party = '${req.query.category}' ORDER BY 4 DESC`, (err, data) => {
@@ -186,9 +241,15 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     }
     } 
@@ -202,9 +263,15 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     } else {
         db.query(`SELECT * FROM inventory ORDER BY 4 DESC`, (err, data) => {
@@ -213,24 +280,36 @@ app.get('/filter', (req, res) => {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     }
     }
     // <- ORDER
     // CAT ->
     else if (req.query.category) {
-        db.query(`SELECT * FROM inventory WHERE party = '${req.query.category}'`, (err, data) => {
+        db.query(`SELECT * FROM inventory WHERE party = '${req.query.category}' ORDER BY 3`, (err, data) => {
             for (let i = 0 ; i < data.length ; i ++) {
                 if (data[i].onsale) {
                     data[i].saleprice = Math.ceil(data[i].cost - ((data[i].cost * data[i].onsale)/100));
                 }
             }
-            res.render('search' , {
-                data: data
-            })
+            if (req.isAuthenticated()) {
+
+                res.render('search' , {
+                    data: data , welcome: `Welcome, ${req.user.nickname}` , user: req.user
+                })  } else {
+                    res.render('search', {
+                        data: data
+                    })
+                }
         })
     }
     // <- CAT

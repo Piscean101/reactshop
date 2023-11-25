@@ -1,0 +1,32 @@
+<link rel="stylesheet" href="/side.css">
+
+<body id="checkout-page"> 
+
+    <div id="checkout">
+
+        <table id="item-list">
+            <% for (let i = 0 ; i < locals.data.length ; i++) { %>
+                <tr id="checkout-item">
+                    <td>
+                <p><%= locals.data[i].item_name %></p>
+                    </td>
+                </tr>
+            <% } %> 
+            </table>
+
+        <section id="confirmation">
+            <div class="subtotal">
+                <h3>Subtotal:</h3>
+                <h3>HST:</h3>
+            </div>
+            <div class="total">
+                <h3>Total:</h3>
+            </div>
+            <form>
+                <button type="submit">Order Now</button>
+            </form>
+        </section>
+
+    </div>
+
+</body>
